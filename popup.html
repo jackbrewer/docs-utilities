@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Select a style</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        padding: 1rem;
+        min-width: 200px;
+        background: rgb(255 255 255);
+      }
+      nav {
+        display: grid;
+        gap: 1rem;
+      }
+      button {
+        box-sizing: border-box;
+        display: block;
+        width: 100%;
+        cursor: pointer;
+        border-radius: 0.375rem;
+        border: 0;
+        font-family: font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto, arial, sans-serif;;
+        font-weight: 600;
+        transition: all .2s ease;
+
+        min-height: 2.25rem;
+        padding: 0.5rem 1rem;
+        text-align: center;
+        font-size: 1rem;
+        line-height: 1.25;
+
+        background: rgb(46 81 237);
+        color: rgb(237 244 255);
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <button data-intent="blur">Blur</button>
+      <button data-intent="focus">Focus</button>
+    </nav>
+    <script src="popup.js"></script>
+  </body>
+</html>
