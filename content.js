@@ -1,8 +1,22 @@
 let isInitialized = false;
 let isEditing = false;
+let gap = 12;
 
-const ignoredClickElements = ["BODY", "HTML"];
+const ignoredClickElements = [
+  "BODY",
+  "HTML",
+  // SVG Content
+  "PATH",
+  "LINE",
+  "POLYGON",
+  "CIRCLE",
+  "RECT",
+  "ELLIPSE",
+  "G",
+  "TEXT",
+];
 const ignoredClickClasses = ["u-dynamic-lightbox", "u-barrier"];
+// const cancelClickClasses = ["u-toolbar", "u-button"];
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.action === "popupOpened") {
@@ -27,7 +41,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
           height: 100vh;
           border-radius: 8px;
           box-shadow: 0 0 0 200vmax rgb(0 0 0 / 40%);
-          z-index: 999999;
+          z-index: 999998;
           transition: all 0.2s ease-in-out;
         }
 
@@ -38,8 +52,38 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         .u-editing .u-barrier {
           position: fixed;
           inset: 0;
-          z-index: 999998;
+          z-index: 999997;
           /* box-shadow: 0 0 0 4px inset rgba(0, 200, 0); */
+        }
+
+        .u-toolbar {
+          display: none;
+          position: fixed;
+          bottom: 0;
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 999999;
+          background: white;
+          padding: 8px;
+          border-radius: 8px 8px 0 0;
+          box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+          gap: 8px;
+          border: 1px solid rgba(0, 0, 0, 0.1);
+          border-bottom: none;
+        }
+
+        .u-editing .u-toolbar {
+          display: flex;
+        }
+
+        .u-button {
+          background: blue;
+          color: white;
+          padding: 8px 16px;
+          border-radius: 4px;
+          border: none;
+          cursor: pointer;
+          transition: all 0.2s ease-in-out;
         }
       `;
       document.head.appendChild(style);
@@ -47,6 +91,22 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       const barrier = document.createElement("div");
       barrier.classList.add("u-barrier");
       document.body.appendChild(barrier);
+
+      // // Add a toolbar, which is visible in focus edit mode
+      // const toolbar = document.createElement("div");
+      // toolbar.classList.add("u-toolbar");
+
+      // [0, 4, 12, 24].forEach((num) => {
+      //   const spacingButton = document.createElement("button");
+      //   spacingButton.classList.add("u-button");
+      //   spacingButton.innerText = "Spacing " + num + "px";
+      //   spacingButton.addEventListener("click", () => {
+      //     gap = num;
+      //   });
+      //   toolbar.appendChild(spacingButton);
+      // });
+
+      // document.body.appendChild(toolbar);
     }
   }
 
@@ -105,27 +165,44 @@ function addHighlightBox() {
 }
 
 const handleFocusClick = (event) => {
-  const gap = 12;
+  const stackedElements = document.elementsFromPoint(
+    event.clientX,
+    event.clientY
+  );
 
-  const possibleElements = document
-    .elementsFromPoint(event.clientX, event.clientY)
-    .filter((el) => {
-      if (ignoredClickElements.includes(el.tagName)) {
-        return false;
-      }
-      if (
-        ignoredClickClasses.some((className) =>
-          el.classList.contains(className)
-        )
-      ) {
-        return false;
-      }
-      return true;
-    });
+  // // If the clicked element is in the cancelClickClasses array, return
+  // if (
+  //   stackedElements.some((el) =>
+  //     cancelClickClasses.some((className) => el.classList.contains(className))
+  //   )
+  // ) {
+  //   return;
+  // }
+
+  const possibleElements = stackedElements.filter((el) => {
+    if (ignoredClickElements.includes(el.tagName)) {
+      return false;
+    }
+    if (
+      ignoredClickClasses.some((className) => el.classList.contains(className))
+    ) {
+      return false;
+    }
+
+    // Ignore elements which have the same dimensions as their child
+    if (
+      el.children.length > 0 &&
+      el.children[0].offsetWidth === el.offsetWidth &&
+      el.children[0].offsetHeight === el.offsetHeight
+    ) {
+      return false;
+    }
+
+    return true;
+  });
 
   const selectedElementIndex = possibleElements.indexOf(focussedElement);
   const isNewTopLevelElement = possibleElements[0] !== topLevelElement;
-  console.log(selectedElementIndex);
 
   // Is the shift button pressed?
   const isShiftPressed = event.shiftKey;
@@ -142,11 +219,6 @@ const handleFocusClick = (event) => {
 
   focussedElement = targetElement;
   topLevelElement = possibleElements[0];
-
-  console.log(
-    targetElement,
-    document.elementsFromPoint(event.clientX, event.clientY)
-  );
 
   // Get clicked elements position using getBoundingClientRect()
   var rect = targetElement.getBoundingClientRect();
