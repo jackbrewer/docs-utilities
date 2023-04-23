@@ -1,0 +1,27 @@
+.u-blur-selected {
+  transition: filter 0.2s ease-in-out;
+  filter: blur(6px);
+}
+
+.u-dynamic-lightbox {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  border-radius: 8px;
+  box-shadow: 0 0 0 200vmax rgb(0 0 0 / 40%);
+  z-index: 999998;
+  transition: all 0.2s ease-in-out;
+}
+
+.u-dynamic-lightbox--hidden {
+  opacity: 0;
+}
+
+.u-editing .u-barrier {
+  position: fixed;
+  inset: 0;
+  z-index: 999997;
+  /* box-shadow: 0 0 0 4px inset rgba(0, 200, 0); */
+}
