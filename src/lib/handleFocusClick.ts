@@ -1,14 +1,16 @@
-import { CLASS_LIGHTBOX_HIDDEN, FOCUS_SPACING } from './constants';
+import { CANCEL_CLASSES, FOCUS_SPACING } from './constants';
 import { filterStackedElements } from './filterStackedElements';
 import { getSelectionIndex } from './getSelectionIndex';
 
 type HandleFocusClickArgs = {
+  element: HTMLElement;
   event: MouseEvent;
   focussedElement: HTMLElement | null;
   topLevelElement: HTMLElement | null;
 };
 
 export const handleFocusClick = ({
+  element,
   event,
   focussedElement,
   topLevelElement,
@@ -17,6 +19,15 @@ export const handleFocusClick = ({
     event.clientX,
     event.clientY
   ) as HTMLElement[];
+
+  // If the clicked element is in the cancelClickClasses array, return
+  if (
+    stackedElements.some((el) =>
+      CANCEL_CLASSES.some((className) => el.classList.contains(className))
+    )
+  ) {
+    return;
+  }
 
   const possibleElements = filterStackedElements({
     stackedElements,
@@ -42,25 +53,12 @@ export const handleFocusClick = ({
 
   // Get clicked elements position using getBoundingClientRect()
   var rect = targetElement.getBoundingClientRect();
-  // Get the border-radius style of the clicked element
-  var radius = window
-    .getComputedStyle(targetElement)
-    .getPropertyValue('border-radius');
 
   // Get the highlight box element
-  var highlightBox = document.getElementById('highlight-box');
-
-  if (highlightBox) {
-    highlightBox.classList.remove(CLASS_LIGHTBOX_HIDDEN);
-    highlightBox.style.top =
-      rect.top + window.pageYOffset - FOCUS_SPACING + 'px';
-    highlightBox.style.left =
-      rect.left + window.pageXOffset - FOCUS_SPACING + 'px';
-    highlightBox.style.width = rect.width + FOCUS_SPACING * 2 + 'px';
-    highlightBox.style.height = rect.height + FOCUS_SPACING * 2 + 'px';
-    highlightBox.style.borderRadius =
-      !radius || radius === '0px' ? '' : `calc(${radius} + ${FOCUS_SPACING}px)`;
-  }
+  element.style.top = rect.top + window.pageYOffset - FOCUS_SPACING + 'px';
+  element.style.left = rect.left + window.pageXOffset - FOCUS_SPACING + 'px';
+  element.style.width = rect.width + FOCUS_SPACING * 2 + 'px';
+  element.style.height = rect.height + FOCUS_SPACING * 2 + 'px';
 
   return {
     newFocussedElement: targetElement,

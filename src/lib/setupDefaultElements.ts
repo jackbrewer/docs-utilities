@@ -1,3 +1,5 @@
+import { template } from './template';
+
 import { CLASS_BARRIER } from './constants';
 
 // @ts-ignore
@@ -15,4 +17,15 @@ export const setupDefaultElements = () => {
   const barrierEl = document.createElement('div');
   barrierEl.classList.add(CLASS_BARRIER);
   document.body.appendChild(barrierEl);
+
+  // Append template string to the body as HTML
+  document.body.insertAdjacentHTML('beforeend', template);
+
+  // Get references to the elements from the template
+  const box = document.querySelector('.js-box') as HTMLElement;
+  if (!box) {
+    throw new Error('Could not find box');
+  }
+
+  return { box };
 };

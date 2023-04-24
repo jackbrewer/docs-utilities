@@ -1,111 +1,55 @@
-import {
-  CLASS_EDITING,
-  CLASS_LIGHTBOX,
-  CLASS_LIGHTBOX_HIDDEN,
-} from './lib/constants';
-import { handleBlurClick } from './lib/handleBlurClick';
-import { handleFocusClick } from './lib/handleFocusClick';
+import { setElementPosition } from './lib/setElementPosition';
+import { setElementSize } from './lib/setElementSize';
 import { setupDefaultElements } from './lib/setupDefaultElements';
+import { setupPoints } from './lib/setupPoints';
+import { handleFocusClick } from './lib/handleFocusClick';
+import { CLASS_TOP_LEVEL } from './lib/constants';
 
-let isEditing = false;
-let isInitialized = false;
+console.log('Docs Utilities: Activated!');
 
-const enterEditMode = () => {
-  isEditing = true;
-  document.body.classList.add(CLASS_EDITING);
-};
+const initialise = () => {
+  document.body.classList.add(CLASS_TOP_LEVEL);
 
-const exitEditMode = () => {
-  isEditing = false;
-  document.body.classList.remove(CLASS_EDITING);
-  disableBlurMode();
-  disableFocusMode();
-};
+  // "State"
+  let focussedElement: HTMLElement | null = null;
+  let topLevelElement: HTMLElement | null = null;
 
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  if (request.action === 'popupOpened') {
-    exitEditMode();
+  // Add elements to DOM
+  const { box } = setupDefaultElements();
 
-    if (!isInitialized) {
-      isInitialized = true;
-      setupDefaultElements();
+  // Set initial position and size of focus area
+  //get half of the viewport width and height
+  const initialWidth = 200;
+  const initialHeight = 150;
+  const initialX = (window.innerWidth - initialWidth) / 2;
+  const initialY = (window.innerHeight - initialHeight) / 2;
+  setElementPosition({ element: box, x: initialX, y: initialY });
+  setElementSize({ element: box, w: initialWidth, h: initialHeight });
+
+  // Setup drag and resize event handlers for the points
+  setupPoints({ element: box });
+
+  // Handle dom element clicks
+  const handleFocusClickWrapper = (event: MouseEvent) => {
+    let newElements = handleFocusClick({
+      element: box,
+      event,
+      focussedElement,
+      topLevelElement,
+    });
+
+    if (newElements) {
+      focussedElement = newElements.newFocussedElement;
+      topLevelElement = newElements.newTopLevelElement;
     }
-  }
+  };
 
-  if (request.action === 'activateExtension') {
-    enterEditMode();
-
-    if (request.intent === 'blur') {
-      enableBlurMode();
-    }
-
-    if (request.intent === 'focus') {
-      enableFocusMode();
-    }
-  }
-});
-
-// Focus mode
-
-let focussedElement: HTMLElement | null = null;
-let topLevelElement: HTMLElement | null = null;
-
-const handleFocusClickWrapper = (event: MouseEvent) => {
-  let { newFocussedElement, newTopLevelElement } = handleFocusClick({
-    event,
-    focussedElement,
-    topLevelElement,
-  });
-
-  focussedElement = newFocussedElement;
-  topLevelElement = newTopLevelElement;
+  document.addEventListener('mousedown', handleFocusClickWrapper);
 };
 
-const enableFocusMode = () => {
-  addHighlightBox();
-  document.addEventListener('click', handleFocusClickWrapper);
-  document.addEventListener('keydown', handleFocusKeydown);
-};
-
-const disableFocusMode = () => {
-  focussedElement = null;
-  topLevelElement = null;
-  document.removeEventListener('click', handleFocusClickWrapper);
-  document.removeEventListener('keydown', handleFocusKeydown);
-};
-
-function addHighlightBox() {
-  if (document.getElementById('highlight-box')) {
-    return;
-  }
-  var highlightBox = document.createElement('div');
-  highlightBox.classList.add(CLASS_LIGHTBOX);
-  highlightBox.classList.add(CLASS_LIGHTBOX_HIDDEN);
-  highlightBox.id = 'highlight-box';
-  document.body.appendChild(highlightBox);
+const isInitialised = document.body.classList.contains(CLASS_TOP_LEVEL);
+if (isInitialised) {
+  console.log('Already initialised…');
+} else {
+  initialise();
 }
-
-const handleFocusKeydown = (event) => {
-  if (event.key === 'Escape') {
-    exitEditMode();
-    disableFocusMode();
-  }
-};
-
-// Blur mode
-const enableBlurMode = () => {
-  document.addEventListener('click', handleBlurClick);
-  document.addEventListener('keydown', handleBlurKeydown);
-};
-
-const disableBlurMode = () => {
-  document.removeEventListener('click', handleBlurClick);
-  document.removeEventListener('keydown', handleBlurKeydown);
-};
-
-const handleBlurKeydown = (event) => {
-  if (event.key === 'Escape') {
-    exitEditMode();
-    disableBlurMode();
-  }
-};

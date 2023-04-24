@@ -4,7 +4,7 @@ import { copy } from 'esbuild-plugin-copy';
 const isDevelopment = process.argv[2] === '--dev';
 
 let ctx = await esbuild.context({
-  entryPoints: ['src/content.ts', 'src/popup.ts'],
+  entryPoints: ['src/content.ts', 'src/background.ts'],
   bundle: true,
   outdir: 'dist',
   format: 'esm',
@@ -19,8 +19,13 @@ let ctx = await esbuild.context({
       resolveFrom: 'cwd',
       assets: [
         {
-          from: ['src/assets/*'],
+          from: ['src/assets/**/*'],
           to: ['dist/'],
+          watch: true,
+        },
+        {
+          from: ['src/demo/**/*'],
+          to: ['dist/demo/'],
           watch: true,
         },
       ],
@@ -29,3 +34,11 @@ let ctx = await esbuild.context({
 });
 
 await ctx.watch();
+
+if (isDevelopment) {
+  let { host, port } = await ctx.serve({
+    servedir: 'dist',
+  });
+
+  console.log(`Serving demo at http://${host}:${port}/demo/`);
+}

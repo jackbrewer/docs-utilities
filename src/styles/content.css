@@ -3,25 +3,157 @@
   filter: blur(6px);
 }
 
-.u-dynamic-lightbox {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  border-radius: 8px;
-  box-shadow: 0 0 0 200vmax rgb(0 0 0 / 40%);
-  z-index: 999998;
-  transition: all 0.2s ease-in-out;
-}
-
-.u-dynamic-lightbox--hidden {
-  opacity: 0;
-}
-
-.u-editing .u-barrier {
+.u-barrier {
   position: fixed;
   inset: 0;
   z-index: 999997;
-  /* box-shadow: 0 0 0 4px inset rgba(0, 200, 0); */
+}
+
+.box {
+  --dot-size: 16px;
+
+  box-sizing: border-box;
+  position: absolute;
+  user-select: none;
+
+  top: 0;
+  left: 0;
+
+  z-index: 999998;
+
+  width: 100vw;
+  height: 100vh;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 0 0 200vmax rgb(0 0 0 / 40%);
+  border-radius: 8px;
+}
+
+.docs-utilities--dragging .box,
+.docs-utilities--resizing .box {
+  transition: none;
+}
+
+.box__point {
+  box-sizing: border-box;
+  height: var(--dot-size);
+  width: var(--dot-size);
+  background-color: #1e88e5;
+  position: absolute;
+  border-radius: 100px;
+  border: 1px solid white;
+  user-select: none;
+  opacity: 0;
+  transition: all 0.2s ease-in-out;
+  transform: translate(-50%, -50%);
+}
+
+.box:hover .box__point {
+  /* transition-delay: 1s; */
+  opacity: 1;
+}
+
+.box__point[data-point*='top'] {
+  top: 0;
+}
+.box__point[data-point*='middle'] {
+  top: 50%;
+}
+.box__point[data-point*='bottom'] {
+  top: 100%;
+}
+
+.box__point[data-point*='left'] {
+  left: 0;
+}
+.box__point[data-point*='center'] {
+  left: 50%;
+}
+.box__point[data-point*='right'] {
+  left: 100%;
+}
+
+/* Cursors */
+.box__point[data-point*='left-top'] {
+  cursor: nwse-resize;
+}
+.box__point[data-point*='center-top'] {
+  cursor: ns-resize;
+}
+.box__point[data-point*='right-top'] {
+  cursor: nesw-resize;
+}
+.box__point[data-point*='left-middle'] {
+  cursor: ew-resize;
+}
+.box__point[data-point*='center-middle'] {
+  cursor: move;
+}
+.box__point[data-point*='center-middle']:active {
+  cursor: move;
+}
+.box__point[data-point*='right-middle'] {
+  cursor: ew-resize;
+}
+.box__point[data-point*='left-bottom'] {
+  cursor: nesw-resize;
+}
+.box__point[data-point*='center-bottom'] {
+  cursor: ns-resize;
+}
+.box__point[data-point*='right-bottom'] {
+  cursor: nwse-resize;
+}
+
+/* During dragging, hide the resize handles */
+.docs-utilities--dragging .box__point:not([data-point='center-middle']) {
+  --dot-size: 0px;
+  transition-delay: 0s;
+}
+
+/* During resizing, hide all other drag handles */
+.docs-utilities--resizing .box__point {
+  --dot-size: 0px;
+  transition-delay: 0s;
+}
+
+/* Shrink the non-hovered handles a bit */
+.box:hover:has(.box__point:hover) .box__point:not(:hover) {
+  --dot-size: 8px;
+}
+
+/* Make the active point larger */
+.box__point:hover,
+.box__point:active {
+  transition-duration: 0.1s;
+  --dot-size: 20px;
+}
+
+/* Guides */
+.box__guide {
+  position: absolute;
+  border: 1px dashed #fff;
+  transition: opacity 0.2s ease-in-out;
+  opacity: 0;
+  display: none;
+  pointer-events: none;
+}
+:is(.docs-utilities--dragging, .docs-utilities--resizing) .box__guide {
+  opacity: 0.5;
+  display: block;
+}
+.box__guide--horizontal {
+  top: -1px;
+  bottom: -1px;
+  left: 50%;
+  width: 200vw;
+  transform: translateX(-50%);
+  border-width: 1px 0;
+}
+.box__guide--vertical {
+  left: -1px;
+  right: -1px;
+  top: 50%;
+  height: 200vh;
+  transform: translateY(-50%);
+  border-width: 0 1px;
 }
