@@ -47,6 +47,8 @@
   transform: translate(-50%, -50%);
 }
 
+.docs-utilities--dragging .box__point,
+.docs-utilities--resizing .box__point,
 .box:hover .box__point {
   /* transition-delay: 1s; */
   opacity: 1;
@@ -104,22 +106,22 @@
   cursor: nwse-resize;
 }
 
-/* During dragging, hide the resize handles */
-.docs-utilities--dragging .box__point:not([data-point='center-middle']) {
-  --dot-size: 0px;
-  transition-delay: 0s;
-}
-
-/* During resizing, hide all other drag handles */
-.docs-utilities--resizing .box__point {
-  --dot-size: 0px;
-  transition-delay: 0s;
-}
-
 /* Shrink the non-hovered handles a bit */
 .box:hover:has(.box__point:hover) .box__point:not(:hover) {
   --dot-size: 8px;
 }
+
+/* During dragging, hide the resize handles */
+/* .docs-utilities--dragging .box__point:not([data-point='center-middle']) {
+  --dot-size: 0px;
+  transition-delay: 0s;
+} */
+
+/* During resizing, hide all other drag handles */
+/* .docs-utilities--resizing .box__point {
+  --dot-size: 0px;
+  transition-delay: 0s;
+} */
 
 /* Make the active point larger */
 .box__point:hover,
@@ -134,7 +136,6 @@
   border: 1px dashed #fff;
   transition: opacity 0.2s ease-in-out;
   opacity: 0;
-  display: none;
   pointer-events: none;
 }
 :is(.docs-utilities--dragging, .docs-utilities--resizing) .box__guide {

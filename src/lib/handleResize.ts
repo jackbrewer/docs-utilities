@@ -33,6 +33,8 @@ export const handleResize = ({
   const initH = element.offsetHeight;
 
   function eventMoveHandler(event) {
+    const altKey = event.altKey;
+
     let wDiff = event.clientX - mousePressX;
     let hDiff = event.clientY - mousePressY;
 
@@ -43,34 +45,28 @@ export const handleResize = ({
 
     if (xResize) {
       if (left) {
-        newW = initW - wDiff;
-        if (newW < minWidth) {
-          newW = minWidth;
-          wDiff = initW - minWidth;
-        }
+        newW = altKey ? initW - wDiff * 2 : initW - wDiff;
+        if (newW < minWidth) return;
         newX += wDiff;
       } else {
-        newW = initW + wDiff;
-        if (newW < minWidth) {
-          newW = minWidth;
-          wDiff = minWidth - initW;
+        newW = altKey ? initW + wDiff * 2 : initW + wDiff;
+        if (newW < minWidth) return;
+        if (altKey) {
+          newX -= wDiff;
         }
       }
     }
 
     if (yResize) {
       if (top) {
-        newH = initH - hDiff;
-        if (newH < minHeight) {
-          newH = minHeight;
-          hDiff = initH - minHeight;
-        }
+        newH = altKey ? initH - hDiff * 2 : initH - hDiff;
+        if (newH < minHeight) return;
         newY += hDiff;
       } else {
-        newH = initH + hDiff;
-        if (newH < minHeight) {
-          newH = minHeight;
-          hDiff = minHeight - initH;
+        newH = altKey ? initH + hDiff * 2 : initH + hDiff;
+        if (newH < minHeight) return;
+        if (altKey) {
+          newY -= hDiff;
         }
       }
     }
