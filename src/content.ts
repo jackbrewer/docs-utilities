@@ -3,9 +3,12 @@ import { setElementSize } from './lib/setElementSize';
 import { setupDefaultElements } from './lib/setupDefaultElements';
 import { setupPoints } from './lib/setupPoints';
 import { handleFocusClick } from './lib/handleFocusClick';
-import { CLASS_TOP_LEVEL } from './lib/constants';
+import { CLASS_TOP_LEVEL, MODES } from './lib/constants';
+import { setupToolbar } from './lib/setupToolbar';
+import { setupDrag } from './lib/setupDrag';
 
 console.log('Docs Utilities: Activated!');
+type ModeTypes = (typeof MODES)[number];
 
 const initialise = () => {
   document.body.classList.add(CLASS_TOP_LEVEL);
@@ -13,6 +16,7 @@ const initialise = () => {
   // "State"
   let focussedElement: HTMLElement | null = null;
   let topLevelElement: HTMLElement | null = null;
+  let mode: ModeTypes = MODES[0];
 
   // Add elements to DOM
   const { box } = setupDefaultElements();
@@ -26,11 +30,24 @@ const initialise = () => {
   setElementPosition({ element: box, x: initialX, y: initialY });
   setElementSize({ element: box, w: initialWidth, h: initialHeight });
 
+  const handleModeChange = (newMode: ModeTypes) => {
+    console.log('Mode changed to:', newMode);
+    document.body.classList.remove(...MODES.map((m) => `du-mode--${m}`));
+    document.body.classList.add(`du-mode--${newMode}`);
+    mode = newMode;
+  };
+  // Setup Toolbar
+  setupToolbar({ onChange: handleModeChange });
+
   // Setup drag and resize event handlers for the points
   setupPoints({ element: box });
+  setupDrag({ element: box });
 
   // Handle dom element clicks
   const handleFocusClickWrapper = (event: MouseEvent) => {
+    if (mode !== 'select') {
+      return;
+    }
     let newElements = handleFocusClick({
       element: box,
       event,

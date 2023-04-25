@@ -1,4 +1,4 @@
-import { template } from './template';
+import { template, toolbar } from './template';
 
 import { CLASS_BARRIER } from './constants';
 
@@ -26,6 +26,8 @@ export const setupDefaultElements = () => {
   if (!box) {
     throw new Error('Could not find box');
   }
+
+  document.body.insertAdjacentHTML('beforeend', toolbar);
 
   return { box };
 };

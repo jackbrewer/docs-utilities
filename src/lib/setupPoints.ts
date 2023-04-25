@@ -1,4 +1,5 @@
-import { handleDrag } from './handleDrag';
+// import { handleDrag } from './handleDrag';
+import { CLASS_BOX_POINT } from './constants';
 import { handleResize } from './handleResize';
 
 type SetupPointsArgs = {
@@ -20,7 +21,7 @@ export const setupPoints = ({ element }: SetupPointsArgs) => {
 
   resizePoints.forEach((point) => {
     const pointElement = document.querySelector(
-      `.box__point[data-point="${point}"]`
+      `.${CLASS_BOX_POINT}[data-point="${point}"]`
     ) as HTMLElement;
     pointElement.addEventListener('mousedown', (event) =>
       handleResize({
@@ -31,25 +32,6 @@ export const setupPoints = ({ element }: SetupPointsArgs) => {
         xResize: point.includes('left') || point.includes('right'),
         yResize: point.includes('top') || point.includes('bottom'),
       })
-    );
-  });
-
-  // Drag from center
-
-  const dragPoints = ['center-middle'];
-
-  dragPoints.forEach((point) => {
-    const pointElement = document.querySelector(
-      `.box__point[data-point="${point}"]`
-    ) as HTMLElement;
-    pointElement.addEventListener(
-      'mousedown',
-      (event) =>
-        handleDrag({
-          element,
-          event,
-        }),
-      false
     );
   });
 };

@@ -1,15 +1,15 @@
-.u-blur-selected {
+.du-blur-selected {
   transition: filter 0.2s ease-in-out;
   filter: blur(6px);
 }
 
-.u-barrier {
+.du-barrier {
   position: fixed;
   inset: 0;
   z-index: 999997;
 }
 
-.box {
+.du-box {
   --dot-size: 16px;
 
   box-sizing: border-box;
@@ -28,12 +28,12 @@
   border-radius: 8px;
 }
 
-.docs-utilities--dragging .box,
-.docs-utilities--resizing .box {
+.du--dragging .du-box,
+.du--resizing .du-box {
   transition: none;
 }
 
-.box__point {
+.du-box__point {
   box-sizing: border-box;
   height: var(--dot-size);
   width: var(--dot-size);
@@ -42,107 +42,105 @@
   border-radius: 100px;
   border: 1px solid white;
   user-select: none;
-  opacity: 0;
   transition: all 0.2s ease-in-out;
   transform: translate(-50%, -50%);
+  opacity: 0;
+  display: none;
+}
+.du-mode--manual .du-box__point {
+  display: block;
 }
 
-.docs-utilities--dragging .box__point,
-.docs-utilities--resizing .box__point,
-.box:hover .box__point {
+.du--dragging .du-box__point,
+.du--resizing .du-box__point,
+.du-box:hover .du-box__point {
   /* transition-delay: 1s; */
   opacity: 1;
 }
 
-.box__point[data-point*='top'] {
+.du-box__point[data-point*='top'] {
   top: 0;
 }
-.box__point[data-point*='middle'] {
+.du-box__point[data-point*='middle'] {
   top: 50%;
 }
-.box__point[data-point*='bottom'] {
+.du-box__point[data-point*='bottom'] {
   top: 100%;
 }
 
-.box__point[data-point*='left'] {
+.du-box__point[data-point*='left'] {
   left: 0;
 }
-.box__point[data-point*='center'] {
+.du-box__point[data-point*='center'] {
   left: 50%;
 }
-.box__point[data-point*='right'] {
+.du-box__point[data-point*='right'] {
   left: 100%;
 }
 
 /* Cursors */
-.box__point[data-point*='left-top'] {
+.du-box__point[data-point*='left-top'] {
   cursor: nwse-resize;
 }
-.box__point[data-point*='center-top'] {
+.du-box__point[data-point*='center-top'] {
   cursor: ns-resize;
 }
-.box__point[data-point*='right-top'] {
+.du-box__point[data-point*='right-top'] {
   cursor: nesw-resize;
 }
-.box__point[data-point*='left-middle'] {
+.du-box__point[data-point*='left-middle'] {
   cursor: ew-resize;
 }
-.box__point[data-point*='center-middle'] {
-  cursor: move;
-}
-.box__point[data-point*='center-middle']:active {
-  cursor: move;
-}
-.box__point[data-point*='right-middle'] {
+.du-box__point[data-point*='right-middle'] {
   cursor: ew-resize;
 }
-.box__point[data-point*='left-bottom'] {
+.du-box__point[data-point*='left-bottom'] {
   cursor: nesw-resize;
 }
-.box__point[data-point*='center-bottom'] {
+.du-box__point[data-point*='center-bottom'] {
   cursor: ns-resize;
 }
-.box__point[data-point*='right-bottom'] {
+.du-box__point[data-point*='right-bottom'] {
   cursor: nwse-resize;
 }
 
 /* Shrink the non-hovered handles a bit */
-.box:hover:has(.box__point:hover) .box__point:not(:hover) {
+.du-box:hover:has(.du-box__point:hover) .du-box__point:not(:hover) {
   --dot-size: 8px;
 }
 
-/* During dragging, hide the resize handles */
-/* .docs-utilities--dragging .box__point:not([data-point='center-middle']) {
-  --dot-size: 0px;
-  transition-delay: 0s;
-} */
-
-/* During resizing, hide all other drag handles */
-/* .docs-utilities--resizing .box__point {
-  --dot-size: 0px;
-  transition-delay: 0s;
-} */
-
 /* Make the active point larger */
-.box__point:hover,
-.box__point:active {
+.du-box__point:hover,
+.du-box__point:active {
   transition-duration: 0.1s;
   --dot-size: 20px;
 }
 
+/* DRAGGING */
+.du-box__drag {
+  position: absolute;
+  inset: 0;
+  /* background: rgb(0 255 0 / 40%); */
+  display: none;
+  cursor: move;
+}
+.du-mode--manual .du-box__drag {
+  display: block;
+}
+
 /* Guides */
-.box__guide {
+.du-box__guide {
   position: absolute;
   border: 1px dashed #fff;
   transition: opacity 0.2s ease-in-out;
   opacity: 0;
   pointer-events: none;
 }
-:is(.docs-utilities--dragging, .docs-utilities--resizing) .box__guide {
+:is(.du--dragging, .du--resizing) .du-box__guide {
   opacity: 0.5;
   display: block;
 }
-.box__guide--horizontal {
+.du-box__guide--horizontal {
   top: -1px;
   bottom: -1px;
   left: 50%;
@@ -150,11 +148,50 @@
   transform: translateX(-50%);
   border-width: 1px 0;
 }
-.box__guide--vertical {
+.du-box__guide--vertical {
   left: -1px;
   right: -1px;
   top: 50%;
   height: 200vh;
   transform: translateY(-50%);
   border-width: 0 1px;
+}
+
+/* Toolbar */
+.du-toolbar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  background: #fff;
+  border-radius: 0 0 0 8px;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 999999;
+}
+.du-toolbar__button {
+  background: #fff;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  padding: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: all 0.2s ease-in-out;
+  color: #222;
+}
+.du-toolbar__button:not([disabled]):hover,
+.du-toolbar__button.is-active {
+  background: #222;
+  color: #fff;
+}
+.du-toolbar__button[disabled] {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+.du-toolbar__button svg {
+  fill: none;
 }
