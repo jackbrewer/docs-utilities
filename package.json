@@ -1,6 +1,6 @@
 {
   "name": "docs-utilities",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A Chrome extension to help prepare screenshots for Docs.",
   "main": "index.js",
   "type": "module",
