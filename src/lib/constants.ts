@@ -12,6 +12,8 @@ export const CLASS_BOX_POINT = 'du-box__point';
 
 export const CLASS_DRAG = 'du-box__drag';
 
+export const CLASS_BLUR = 'du--blur-target';
+
 export const CLASS_TOOLBAR = 'du-toolbar';
 export const CLASS_TOOLBAR_BUTTON = 'du-toolbar__button';
 

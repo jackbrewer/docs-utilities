@@ -24,7 +24,7 @@ export const toolbar = `
   <button class="du-toolbar__button js-toolbar-button" data-mode="manual" title="Manual focus">
     <svg width="24px" height="24px" stroke-width="1.2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="currentColor"><path d="M11 13.6V21H3.6a.6.6 0 01-.6-.6V13h7.4a.6.6 0 01.6.6zM11 21h3M3 13v-3M6 3H3.6a.6.6 0 00-.6.6V6M14 3h-4M21 10v4M18 3h2.4a.6.6 0 01.6.6V6M18 21h2.4a.6.6 0 00.6-.6V18M11 10h3v3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
   </button>
-  <button disabled class="du-toolbar__button js-toolbar-button" data-mode="blur" title="Blur element">
+  <button class="du-toolbar__button js-toolbar-button" data-mode="blur" title="Blur element">
     <svg width="24px" height="24px" stroke-width="1.2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="currentColor"><path d="M3 3l18 18M10.5 10.677a2 2 0 002.823 2.823" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M7.362 7.561C5.68 8.74 4.279 10.42 3 12c1.889 2.991 5.282 6 9 6 1.55 0 3.043-.523 4.395-1.35M12 6c4.008 0 6.701 3.158 9 6a15.66 15.66 0 01-1.078 1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
   </button>
   <button disabled class="du-toolbar__button js-toolbar-button" data-mode="close" title="Hide toolbar">
