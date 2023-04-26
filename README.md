@@ -17,7 +17,7 @@ To remove all styles, refresh the page :)
 
 ## Installation (Chrome)
 
-- [Download and uncompress the .zip from the “build” directory](/blob/main/build/docs-utilities.zip)
+- [Download and uncompress the .zip from the “build” directory](https://github.com/jackbrewer/docs-utilities/blob/main/build/docs-utilities.zip)
 - Go to your Google Chrome extensions window at [chrome://extensions/](chrome://extensions/)
 - Toggle on Developer mode (top right corner)
 - Click "Load unpacked" and select the folder for the uncompressed zip
