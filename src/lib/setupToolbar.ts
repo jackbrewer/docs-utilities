@@ -45,3 +45,16 @@ export const setupToolbar = ({ onChange }: SetupToolbarArgs) => {
     });
   });
 };
+
+export const resetToolbarActiveState = () => {
+  const toolbarButtonEls = [
+    ...document.querySelectorAll('.js-toolbar-button'),
+  ] as HTMLElement[];
+
+  toolbarButtonEls.forEach((buttonEl) => {
+    buttonEl.classList.remove('is-active');
+  });
+
+  const initialEl = toolbarButtonEls[0];
+  initialEl.classList.add('is-active');
+};

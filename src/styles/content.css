@@ -169,6 +169,7 @@
   flex-direction: column;
   gap: 4px;
   z-index: 999999;
+  transition: all 0.2s ease-in-out;
 }
 .du-toolbar__button {
   background: #fff;
@@ -194,4 +195,7 @@
 }
 .du-toolbar__button svg {
   fill: none;
+}
+.du-mode--close .du-toolbar {
+  transform: translateX(100%);
 }
