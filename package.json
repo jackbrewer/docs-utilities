@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "yarn build --dev",
+    "dev": "npm run build -- --dev",
     "build": "node ./esbuild.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
