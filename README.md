@@ -17,8 +17,8 @@ To remove all styles, refresh the page :)
 
 ## Installation (Chrome)
 
-- Download and uncompress the .zip from the "Code" dropdown above
-- Go to your Google Chrome extensions window at chrome://extensions/
+- [Download and uncompress the .zip from the “build” directory](/blob/main/build/docs-utilities.zip)
+- Go to your Google Chrome extensions window at [chrome://extensions/](chrome://extensions/)
 - Toggle on Developer mode (top right corner)
 - Click "Load unpacked" and select the folder for the uncompressed zip
 - You should now see the extension icon in your browser extensions bar (if not, it may be hidden with your extensions – you can optionally "pin" it to keep it visible)

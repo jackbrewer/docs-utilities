@@ -1,0 +1,197 @@
+.du-blur-selected {
+  transition: filter 0.2s ease-in-out;
+  filter: blur(6px);
+}
+
+.du-barrier {
+  position: fixed;
+  inset: 0;
+  z-index: 999997;
+}
+
+.du-box {
+  --dot-size: 16px;
+
+  box-sizing: border-box;
+  position: absolute;
+  user-select: none;
+
+  top: 0;
+  left: 0;
+
+  z-index: 999998;
+
+  width: 100vw;
+  height: 100vh;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 0 0 200vmax rgb(0 0 0 / 40%);
+  border-radius: 8px;
+}
+
+.du--dragging .du-box,
+.du--resizing .du-box {
+  transition: none;
+}
+
+.du-box__point {
+  box-sizing: border-box;
+  height: var(--dot-size);
+  width: var(--dot-size);
+  background-color: #1e88e5;
+  position: absolute;
+  border-radius: 100px;
+  border: 1px solid white;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  display: none;
+}
+.du-mode--manual .du-box__point {
+  display: block;
+}
+
+.du--dragging .du-box__point,
+.du--resizing .du-box__point,
+.du-box:hover .du-box__point {
+  /* transition-delay: 1s; */
+  opacity: 1;
+}
+
+.du-box__point[data-point*='top'] {
+  top: 0;
+}
+.du-box__point[data-point*='middle'] {
+  top: 50%;
+}
+.du-box__point[data-point*='bottom'] {
+  top: 100%;
+}
+
+.du-box__point[data-point*='left'] {
+  left: 0;
+}
+.du-box__point[data-point*='center'] {
+  left: 50%;
+}
+.du-box__point[data-point*='right'] {
+  left: 100%;
+}
+
+/* Cursors */
+.du-box__point[data-point*='left-top'] {
+  cursor: nwse-resize;
+}
+.du-box__point[data-point*='center-top'] {
+  cursor: ns-resize;
+}
+.du-box__point[data-point*='right-top'] {
+  cursor: nesw-resize;
+}
+.du-box__point[data-point*='left-middle'] {
+  cursor: ew-resize;
+}
+.du-box__point[data-point*='right-middle'] {
+  cursor: ew-resize;
+}
+.du-box__point[data-point*='left-bottom'] {
+  cursor: nesw-resize;
+}
+.du-box__point[data-point*='center-bottom'] {
+  cursor: ns-resize;
+}
+.du-box__point[data-point*='right-bottom'] {
+  cursor: nwse-resize;
+}
+
+/* Shrink the non-hovered handles a bit */
+.du-box:hover:has(.du-box__point:hover) .du-box__point:not(:hover) {
+  --dot-size: 8px;
+}
+
+/* Make the active point larger */
+.du-box__point:hover,
+.du-box__point:active {
+  transition-duration: 0.1s;
+  --dot-size: 20px;
+}
+
+/* DRAGGING */
+.du-box__drag {
+  position: absolute;
+  inset: 0;
+  /* background: rgb(0 255 0 / 40%); */
+  display: none;
+  cursor: move;
+}
+.du-mode--manual .du-box__drag {
+  display: block;
+}
+
+/* Guides */
+.du-box__guide {
+  position: absolute;
+  border: 1px dashed #fff;
+  transition: opacity 0.2s ease-in-out;
+  opacity: 0;
+  pointer-events: none;
+}
+:is(.du--dragging, .du--resizing) .du-box__guide {
+  opacity: 0.5;
+  display: block;
+}
+.du-box__guide--horizontal {
+  top: -1px;
+  bottom: -1px;
+  left: 50%;
+  width: 200vw;
+  transform: translateX(-50%);
+  border-width: 1px 0;
+}
+.du-box__guide--vertical {
+  left: -1px;
+  right: -1px;
+  top: 50%;
+  height: 200vh;
+  transform: translateY(-50%);
+  border-width: 0 1px;
+}
+
+/* Toolbar */
+.du-toolbar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  background: #fff;
+  border-radius: 0 0 0 8px;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 999999;
+}
+.du-toolbar__button {
+  background: #fff;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  padding: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: all 0.2s ease-in-out;
+  color: #222;
+}
+.du-toolbar__button:not([disabled]):hover,
+.du-toolbar__button.is-active {
+  background: #222;
+  color: #fff;
+}
+.du-toolbar__button[disabled] {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+.du-toolbar__button svg {
+  fill: none;
+}
