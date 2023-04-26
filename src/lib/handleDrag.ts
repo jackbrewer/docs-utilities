@@ -1,7 +1,12 @@
 import { CLASS_DRAGGING } from './constants';
 import { setElementPosition } from './setElementPosition';
 
-export const handleDrag = ({ element, event }) => {
+type HandleDragArgs = {
+  element: HTMLElement;
+  event: MouseEvent;
+};
+
+export const handleDrag = ({ element, event }: HandleDragArgs) => {
   document.body.classList.add(CLASS_DRAGGING);
   const target = event.target as HTMLElement;
 

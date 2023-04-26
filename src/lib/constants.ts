@@ -27,7 +27,7 @@ export const CANCEL_CLASSES = [
   CLASS_DRAG,
 ];
 
-export const MODES = ['select', 'manual', 'blur', 'close'] as const;
+export const MODES = ['select', 'manual', 'blur', 'close'];
 
 export const FOCUS_SPACING = 12;
 

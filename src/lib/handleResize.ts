@@ -32,7 +32,7 @@ export const handleResize = ({
   const initW = element.offsetWidth;
   const initH = element.offsetHeight;
 
-  function eventMoveHandler(event) {
+  function eventMoveHandler(event: MouseEvent) {
     const altKey = event.altKey;
 
     let wDiff = event.clientX - mousePressX;

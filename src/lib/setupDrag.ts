@@ -1,6 +1,10 @@
 import { handleDrag } from './handleDrag';
 
-export const setupDrag = ({ element }) => {
+type SetupDragArgs = {
+  element: HTMLElement;
+};
+
+export const setupDrag = ({ element }: SetupDragArgs) => {
   const dragElement = element.querySelector('.js-box-drag') as HTMLElement;
   dragElement.addEventListener(
     'mousedown',
