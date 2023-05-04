@@ -1,14 +1,18 @@
+import { CLASS_TOP_LEVEL, MODES } from './lib/constants';
+import { handleBlurClick } from './lib/handleBlurClick';
+import { handleFocusClick } from './lib/handleFocusClick';
+import { handleModeChange } from './lib/handleModeChange';
 import { setElementPosition } from './lib/setElementPosition';
 import { setElementSize } from './lib/setElementSize';
 import { setupDefaultElements } from './lib/setupDefaultElements';
-import { setupPoints } from './lib/setupPoints';
-import { handleFocusClick } from './lib/handleFocusClick';
-import { CLASS_TOP_LEVEL, MODES } from './lib/constants';
-import { setupToolbar } from './lib/setupToolbar';
 import { setupDrag } from './lib/setupDrag';
+import { setupPoints } from './lib/setupPoints';
+import { resetToolbarActiveState, setupToolbar } from './lib/setupToolbar';
 
 console.log('Docs Utilities: Activated!');
 type ModeTypes = (typeof MODES)[number];
+
+let mode: ModeTypes = MODES[0];
 
 const initialise = () => {
   document.body.classList.add(CLASS_TOP_LEVEL);
@@ -16,7 +20,6 @@ const initialise = () => {
   // "State"
   let focussedElement: HTMLElement | null = null;
   let topLevelElement: HTMLElement | null = null;
-  let mode: ModeTypes = MODES[0];
 
   // Add elements to DOM
   const { box } = setupDefaultElements();
@@ -30,43 +33,46 @@ const initialise = () => {
   setElementPosition({ element: box, x: initialX, y: initialY });
   setElementSize({ element: box, w: initialWidth, h: initialHeight });
 
-  const handleModeChange = (newMode: ModeTypes) => {
-    console.log('Mode changed to:', newMode);
-    document.body.classList.remove(...MODES.map((m) => `du-mode--${m}`));
-    document.body.classList.add(`du-mode--${newMode}`);
-    mode = newMode;
+  const handleModeChangeWrapper = (newMode: ModeTypes) => {
+    mode = handleModeChange(newMode);
   };
+
   // Setup Toolbar
-  setupToolbar({ onChange: handleModeChange });
+  setupToolbar({ onChange: handleModeChangeWrapper });
 
   // Setup drag and resize event handlers for the points
   setupPoints({ element: box });
   setupDrag({ element: box });
 
   // Handle dom element clicks
-  const handleFocusClickWrapper = (event: MouseEvent) => {
-    if (mode !== 'select') {
-      return;
+  const handleDocumentClick = (event: MouseEvent) => {
+    if (mode === 'blur') {
+      handleBlurClick(event);
     }
-    let newElements = handleFocusClick({
-      element: box,
-      event,
-      focussedElement,
-      topLevelElement,
-    });
 
-    if (newElements) {
-      focussedElement = newElements.newFocussedElement;
-      topLevelElement = newElements.newTopLevelElement;
+    if (mode === 'select') {
+      let newElements = handleFocusClick({
+        element: box,
+        event,
+        focussedElement,
+        topLevelElement,
+      });
+
+      if (newElements) {
+        focussedElement = newElements.newFocussedElement;
+        topLevelElement = newElements.newTopLevelElement;
+      }
     }
   };
 
-  document.addEventListener('mousedown', handleFocusClickWrapper);
+  document.addEventListener('mousedown', handleDocumentClick);
 };
 
 const isInitialised = document.body.classList.contains(CLASS_TOP_LEVEL);
 if (isInitialised) {
   console.log('Already initialised…');
+  handleModeChange(MODES[0]);
+  resetToolbarActiveState();
 } else {
   initialise();
 }

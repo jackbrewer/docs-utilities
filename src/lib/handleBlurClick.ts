@@ -1,4 +1,4 @@
-import { CLASS_BLUR } from './constants';
+import { CANCEL_CLASSES, CLASS_BLUR } from './constants';
 import { filterStackedElements } from './filterStackedElements';
 
 // Take the event from a click handler and get the stacked elements from the
@@ -12,9 +12,20 @@ export const handleBlurClick = (event: MouseEvent) => {
     event.clientY
   ) as HTMLElement[];
 
+  // Check if clicked element is in out ignore list
+  if (
+    stackedElements.some((el) =>
+      CANCEL_CLASSES.some((className) => el.classList.contains(className))
+    )
+  ) {
+    return;
+  }
+
   const targetElement = filterStackedElements({
     stackedElements,
   })[0];
+
+  if (!targetElement) return;
 
   // Check if the target element is not already selected
   if (targetElement.classList.contains(CLASS_BLUR)) {
